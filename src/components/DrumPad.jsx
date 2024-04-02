@@ -4,7 +4,7 @@ const DrumPad = (props) => {
       className={props.classes}
       id={props.keyCode}
       key={props.id}
-      description={props.description}
+      data-description={props.description}
       onClick={props.onClick}
     >
       <p>{props.id}</p>

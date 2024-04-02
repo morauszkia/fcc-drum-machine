@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import './style.css';
+import './App.css';
 import Keyboard from './components/Keyboard';
 import Display from './components/Display';
 import OnSwitch from './components/OnSwitch';
@@ -69,11 +69,22 @@ const App = () => {
   const [displayTxt, setDisplayTxt] = useState('');
 
   useEffect(() => setDisplayTxt(playing ? 'Press a Key!' : ''), [playing]);
-  useEffect(() => document.addEventListener('keydown', keyPressHandler), []);
+  useEffect(() => {
+    const keyPressHandler = (event) => {
+      const validKeyCodes = padsData.map((pad) => pad.keyCode);
+      if (validKeyCodes.includes(event.keyCode)) {
+        const soundButton = document.getElementById(event.keyCode.toString());
+        playSound(soundButton);
+      }
+    };
+
+    document.addEventListener('keydown', keyPressHandler);
+    return () => document.removeEventListener('keydown', keyPressHandler);
+  }, []);
 
   const playSound = (btn) => {
     const sound = btn.querySelector('audio');
-    const description = btn.getAttribute('description');
+    const { description } = btn.dataset;
     sound.currentTime = 0;
     sound.play();
     setDisplayTxt(playing ? description : '');
@@ -82,14 +93,6 @@ const App = () => {
   const clickHandler = (event) => {
     const soundButton = event.target.closest('button');
     playSound(soundButton);
-  };
-
-  const keyPressHandler = (event) => {
-    const validKeyCodes = padsData.map((pad) => pad.keyCode);
-    if (validKeyCodes.includes(event.keyCode)) {
-      const soundButton = document.getElementById(event.keyCode.toString());
-      playSound(soundButton);
-    }
   };
 
   const switchHandler = () => {
