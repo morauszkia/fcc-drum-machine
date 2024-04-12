@@ -1,18 +1,18 @@
 import DrumPad from './DrumPad';
 
-const Keyboard = ({ data, active, onClick, power }) => {
+const Keyboard = ({ data, active, power, onActivate }) => {
   const drumPads = data.map((pad) => (
     <DrumPad
       key={pad.id}
       id={pad.id}
       classes={`drum-pad ${active === pad.keyCode && 'active'}`}
       keyCode={pad.keyCode}
-      description={pad.description}
       sound={pad.audioUrl}
       power={power}
-      onClick={onClick}
+      onActivate={onActivate}
     />
   ));
+
   return <div className="drum-machine--pads">{drumPads}</div>;
 };
 

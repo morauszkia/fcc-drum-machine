@@ -5,8 +5,6 @@ import Keyboard from './components/Keyboard';
 import Display from './components/Display';
 import OnSwitch from './components/OnSwitch';
 
-// function: clear display?
-
 const padsData = [
   {
     id: 'Q',
@@ -67,41 +65,23 @@ const padsData = [
 const App = () => {
   const [playing, setPlaying] = useState(true);
   const [displayTxt, setDisplayTxt] = useState('');
+  // TODO: Add function to clear display
 
   useEffect(() => setDisplayTxt(playing ? 'Press a Key!' : ''), [playing]);
-  useEffect(() => {
-    const keyPressHandler = (event) => {
-      const validKeyCodes = padsData.map((pad) => pad.keyCode);
-      if (validKeyCodes.includes(event.keyCode)) {
-        const soundButton = document.getElementById(event.keyCode.toString());
-        playSound(soundButton);
-      }
-    };
 
-    document.addEventListener('keydown', keyPressHandler);
-    return () => document.removeEventListener('keydown', keyPressHandler);
-  }, []);
-
-  const playSound = (btn) => {
-    const sound = btn.querySelector('audio');
-    const { description } = btn.dataset;
-    sound.currentTime = 0;
-    sound.play();
-    setDisplayTxt(playing ? description : '');
-  };
-
-  const clickHandler = (event) => {
-    const soundButton = event.target.closest('button');
-    playSound(soundButton);
+  const onActivate = (id) => {
+    const { description } = padsData.find((pad) => pad.id === id);
+    if (playing) setDisplayTxt(description);
   };
 
   const switchHandler = () => {
-    setPlaying((prevState) => !prevState);
+    console.log(playing);
+    setPlaying(() => !playing);
   };
 
   return (
     <div id="drum-machine">
-      <Keyboard data={padsData} onClick={clickHandler} power={playing} />
+      <Keyboard data={padsData} onActivate={onActivate} power={playing} />
       <div className="controls">
         <OnSwitch playing={playing} onActivate={switchHandler} />
         <Display text={displayTxt} />
